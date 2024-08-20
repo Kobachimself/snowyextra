@@ -1,0 +1,36 @@
+import json
+import os
+
+class EconomyManager:
+    USER_DATA_FILE = 'user_data.json'
+
+    @staticmethod
+    def get_or_create_user(user_id):
+        if not os.path.exists(EconomyManager.USER_DATA_FILE):
+            with open(EconomyManager.USER_DATA_FILE, 'w') as f:
+                json.dump({}, f)
+
+        with open(EconomyManager.USER_DATA_FILE, 'r') as f:
+            data = json.load(f)
+
+        if str(user_id) not in data:
+            data[str(user_id)] = {
+                'balance': 0,
+                'bank': 0,
+                'loans': 0,
+                'loan_due': None
+            }
+            with open(EconomyManager.USER_DATA_FILE, 'w') as f:
+                json.dump(data, f)
+
+        return data[str(user_id)]
+
+    @staticmethod
+    def update_user(user_id, user_data):
+        with open(EconomyManager.USER_DATA_FILE, 'r') as f:
+            data = json.load(f)
+
+        data[str(user_id)] = user_data
+
+        with open(EconomyManager.USER_DATA_FILE, 'w') as f:
+            json.dump(data, f)
